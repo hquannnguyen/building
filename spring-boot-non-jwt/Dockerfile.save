@@ -1,0 +1,46 @@
+# Giai đoạn 1: Kéo một môi trường có sẵn Maven về để tự động build code
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: Lấy file .jar vừa build xong đem đi chạy
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+# Giai đoạn 1: Kéo một môi trường có sẵn Maven về để tự động build code
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: Lấy file .jar vừa build xong đem đi chạy
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]# Giai đoạn 1: Kéo một môi trường có sẵn Maven về để tự động build code
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: Lấy file .jar vừa build xong đem đi chạy
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]# Giai đoạn 1: Kéo một môi trường có sẵn Maven về để tự động build code
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: Lấy file .jar vừa build xong đem đi chạy
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+

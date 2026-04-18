@@ -1,0 +1,51 @@
+services:
+  estate-db:
+    image: mysql:8.0
+    container_name: estate-db-container
+    command: --lower_case_table_names=1 --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: Huuquan72456@
+      MYSQL_DATABASE: estatebasic
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql # Ánh xạ dữ liệu ra ổ cứng thật để không bị mất
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pHuuquan72456@"]
+      timeout: 5s
+      retries: 10
+    networks:
+      - estate-net
+
+  backend:
+    build: .
+    container_name: estate-backend
+    restart: always
+    ports:
+      - "8080:8082"
+    environment:
+      # Kết nối DB dùng Service Name làm Hostname
+      DB_URL: jdbc:mysql://estate-db:3306/estatebasic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USER: root
+      DB_PASSWORD: Huuquan72456@
+      
+      # Cấu hình Spring Boot
+      SPRING_DATASOURCE_URL: jdbc:mysql://estate-db:3306/estatebasic?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Huuquan72456@
+      
+      # Quan trọng: Đổi sang update để giữ lại dữ liệu cũ
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    networks:
+      - estate-net
+    depends_on:
+      estate-db:
+        condition: service_healthy
+
+networks:
+  estate-net:
+    driver: bridge
+
+volumes:
+  db_data: # Khai báo volume tên là db_data
